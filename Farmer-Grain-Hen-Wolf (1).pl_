@@ -1,0 +1,84 @@
+
+
+
+/*
+ a1-w-e  Farmer goes alone from west to east
+ a2-w-e  Farmer takes Grain from west to east
+ a3-w-e  Farmer takes Hen from west to east
+ a4-w-e  Farmer takes Wolf from west to east
+
+ a5-e-w  Farmer goes alone from east to west
+ a6-e-w  Farmer takes Grain from east to west
+ a7-e-w  Farmer takes Hen from east to west
+ a8-e-w  Farmer takes Wolf from east to west
+
+*/
+ /*
+
+
+F - side of farmer
+G - side of grain
+H - side of Hen
+W - side of Wolf
+
+s(F, G, H, W).
+
+F, G H, W take one of the two value {w, e}
+inital state = s(w, w, w, w)
+goal state =   s(e, e, e, e)
+*/
+
+equal(X, X).
+unequal(X, Y):- not(equal(X,Y)).
+
+opp(S1, S2) :- unequal(S1,S2).
+
+/*
+opp(e, w).
+opp(w, e).
+*/
+
+unsafe(s(F, G, H, W)):-
+    unequal(F, H),
+    (   equal(G, H);
+        equal(H, W)
+    ).
+
+safe(S) :- not(unsafe(S)).
+
+move(a1-w-e, s(w, G, H, W), s(e, G, H, W)):-
+     safe(s(e, G, H, W)).
+
+move(a2-w-e, s(w, w, H, W), s(e, e, H, W)):-
+     safe(s(e, e, H, W)).
+
+move(a3-w-e, s(w, G, w, W), s(e, G, w, W)):-
+     safe(s(e, G, e, W)).
+
+move(a4-w-e, s(w, G, H, w), s(e, G, H, e)):-
+     safe(s(e, G, H, e)).
+
+move(a5-e-w, s(e, G, H, W), s(w, G, H, W)):-
+     safe(s(w, G, H, W)).
+
+
+action(A-D1-D2):-
+    (   A=a1; A=a5),
+    format("Farmer rows alone from ~s to ~s ~n", [D1, D2]).
+
+action(A-D1-D2) :-
+    (   A=a2; A=a6),
+    format("Farmer takes ~s from ~s to ~s ~n", [grain, D1, D2]).
+
+
+action(A-D1-D2) :-
+    (   A=a3; A=a7),
+    format("Farmer takes ~s from ~s to ~s ~n", [hen, D1, D2]).
+
+action(A-D1-D2) :-
+    (   A=a4; A=a8),
+    desc(D1, LD1), desc(D2, LD2),
+    format("Farmer takes ~s from ~s to ~s ~n", [wolf, LD1, LD2]).
+
+desc(w, west).
+desc(e, east).
